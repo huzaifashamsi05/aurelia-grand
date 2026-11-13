@@ -1,0 +1,98 @@
+// Aurelia Grand, Karachi - Hotel Booking and Guest Service System
+// DBMS Group 08 | paste this into https://dbdiagram.io/d to get the online ER diagram
+Project AureliaGrand {
+  database_type: 'SQL Server'
+  Note: 'Hotel Booking and Guest Service System - 8 tables, 3NF'
+}
+
+Table RoomTypes {
+  RoomTypeID int [pk, increment]
+  TypeName varchar(40) [not null, unique]
+  BaseRate decimal(10,2) [not null, note: 'CHECK > 0, PKR per night']
+  MaxOccupancy tinyint [not null, note: 'CHECK 1-6']
+  BedType varchar(20) [not null, note: 'King / Twin / Queen']
+  SizeSqFt smallint [not null]
+  Description varchar(200)
+}
+
+Table Rooms {
+  RoomID int [pk, increment]
+  RoomNumber varchar(5) [not null, unique]
+  RoomTypeID int [not null, ref: > RoomTypes.RoomTypeID]
+  FloorNo tinyint [not null]
+  ViewType varchar(10) [not null, note: 'Sea / City / Garden']
+  Status varchar(12) [not null, default: 'Available']
+  IsSmoking bit [not null, default: 0]
+}
+
+Table Guests {
+  GuestID int [pk, increment]
+  FirstName varchar(40) [not null]
+  LastName varchar(40) [not null]
+  Gender char(1) [not null]
+  Email varchar(100) [not null, unique]
+  Phone varchar(20) [not null]
+  IDDocument varchar(20) [not null, unique, note: 'CNIC or passport']
+  Nationality varchar(30) [not null, default: 'Pakistan']
+  City varchar(40) [not null]
+  DateOfBirth date [not null]
+  VIPTier varchar(10) [not null, default: 'Silver']
+  CreatedAt datetime2 [not null, default: `SYSDATETIME()`]
+}
+
+Table Staff {
+  StaffID int [pk, increment]
+  FullName varchar(60) [not null]
+  Role varchar(20) [not null]
+  Email varchar(100) [not null, unique]
+  Phone varchar(20) [not null]
+  HireDate date [not null]
+  MonthlySalary decimal(10,2) [not null]
+  IsActive bit [not null, default: 1]
+}
+
+Table Bookings {
+  BookingID int [pk, increment]
+  GuestID int [not null, ref: > Guests.GuestID]
+  RoomID int [not null, ref: > Rooms.RoomID]
+  StaffID int [not null, ref: > Staff.StaffID]
+  BookingDate date [not null, default: `GETDATE()`]
+  CheckInDate date [not null]
+  CheckOutDate date [not null, note: 'CHECK > CheckInDate']
+  Adults tinyint [not null, default: 1]
+  Children tinyint [not null, default: 0]
+  Channel varchar(15) [not null]
+  RatePerNight decimal(10,2) [not null]
+  Status varchar(12) [not null, default: 'Confirmed']
+  Nights int [note: 'computed: DATEDIFF(day, CheckIn, CheckOut)']
+  RoomCharge decimal(12,2) [note: 'computed: Nights x RatePerNight']
+}
+
+Table Services {
+  ServiceID int [pk, increment]
+  ServiceName varchar(50) [not null, unique]
+  Category varchar(15) [not null]
+  Price decimal(10,2) [not null]
+  IsAvailable bit [not null, default: 1]
+}
+
+Table ServiceUsage {
+  UsageID int [pk, increment]
+  BookingID int [not null, ref: > Bookings.BookingID]
+  ServiceID int [not null, ref: > Services.ServiceID]
+  StaffID int [ref: > Staff.StaffID, note: 'who delivered it (optional)']
+  UsageDate date [not null]
+  Quantity tinyint [not null, default: 1]
+  UnitPrice decimal(10,2) [not null, note: 'price at time of use']
+  LineTotal decimal(12,2) [note: 'computed: Quantity x UnitPrice']
+}
+
+Table Payments {
+  PaymentID int [pk, increment]
+  BookingID int [not null, ref: > Bookings.BookingID]
+  PaymentDate date [not null]
+  Amount decimal(12,2) [not null, note: 'CHECK > 0']
+  Method varchar(15) [not null, note: 'Cash / Card / Bank Transfer / JazzCash / Easypaisa']
+  PaymentType varchar(10) [not null, note: 'Deposit / Settlement / Refund']
+  TransactionRef varchar(20) [not null, unique]
+}
