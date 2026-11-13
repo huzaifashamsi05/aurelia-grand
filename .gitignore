@@ -1,0 +1,17 @@
+# Secrets must never be committed
+.streamlit/secrets.toml
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Local tooling
+.claude/
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
