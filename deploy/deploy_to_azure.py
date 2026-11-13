@@ -60,7 +60,9 @@ def main():
         print(f"  {t:13s} {cur.execute(f'SELECT COUNT(*) FROM dbo.{t}').fetchone()[0]:>6,} rows")
     # Allow only Streamlit Community Cloud's published outbound IPs (database-level firewall rules).
     for k, ip in enumerate(STREAMLIT_IPS, 1):
-        cur.execute("EXEC sp_set_database_firewall_rule ?, ?, ?", f"StreamlitCloud-{k:02d}", ip, ip)
+        # constants from the list above (not user input), so literal SQL is safe here
+        cur.execute(f"EXEC sp_set_database_firewall_rule @name = N'StreamlitCloud-{k:02d}', "
+                    f"@start_ip_address = '{ip}', @end_ip_address = '{ip}';")
     print(f"  firewall: {len(STREAMLIT_IPS)} Streamlit Cloud IP rules added")
     n = cur.execute("SELECT COUNT(*) FROM sys.objects WHERE type IN ('V','P','TR','FN','IF')").fetchone()[0]
     print(f"  views + procedures + triggers + functions: {n}")
