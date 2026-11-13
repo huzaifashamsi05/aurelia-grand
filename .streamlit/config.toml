@@ -1,0 +1,34 @@
+# Aurelia Grand Command Center - Streamlit configuration
+# Colours follow section 6 of BUILD_BRIEF.md ("luxury" design language).
+
+[client]
+showErrorDetails = "none"        # never show a Python traceback to the user
+toolbarMode = "minimal"          # hide the Streamlit menu
+showSidebarNavigation = false    # we draw our own sidebar
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+base = "dark"
+primaryColor = "#C9A24A"
+backgroundColor = "#0B0B0D"
+secondaryBackgroundColor = "#16161A"
+textColor = "#EDE6D6"
+linkColor = "#C9A24A"
+borderColor = "#2A2A30"
+codeBackgroundColor = "#111114"
+dataframeBorderColor = "#26262B"
+dataframeHeaderBackgroundColor = "#16161A"
+font = "Inter, 'Segoe UI', system-ui, sans-serif"
+headingFont = "'Cormorant Garamond', 'Playfair Display', Georgia, serif"
+codeFont = "'JetBrains Mono', Consolas, 'Courier New', monospace"
+baseRadius = "6px"
+showWidgetBorder = true
+showSidebarBorder = true
+chartCategoricalColors = ["#B28B39", "#4189CC", "#C96A56", "#8F7AD6", "#2A9D82"]
+
+[theme.sidebar]
+backgroundColor = "#101013"
+secondaryBackgroundColor = "#16161A"
+borderColor = "#24242A"
